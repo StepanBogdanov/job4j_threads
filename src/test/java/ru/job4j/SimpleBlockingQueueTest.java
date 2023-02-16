@@ -1,6 +1,7 @@
 package ru.job4j;
 
 import org.junit.jupiter.api.Test;
+import ru.job4j.buffer.SimpleBlockingQueue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,12 @@ class SimpleBlockingQueueTest {
             queue.offer(123);
         });
         Thread consumer = new Thread(() -> {
-            values.add(queue.poll());
+            try {
+                values.add(queue.poll());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                Thread.currentThread().interrupt();
+            }
         });
         producer.start();
         consumer.start();
