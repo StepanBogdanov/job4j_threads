@@ -12,7 +12,7 @@ class SimpleBlockingQueueTest {
 
     @Test
     void whenPollThenOffer() throws InterruptedException {
-        SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<>();
+        SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<>(1);
         List<Integer> values = new ArrayList<>();
         Thread producer = new Thread(() -> {
             try {

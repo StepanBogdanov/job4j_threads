@@ -9,10 +9,14 @@ import java.util.Queue;
 @ThreadSafe
 public class SimpleBlockingQueue<T> {
 
-    private int size = 3;
+    private int size;
 
     @GuardedBy("this")
     private Queue<T> queue = new LinkedList<>();
+
+    public SimpleBlockingQueue(int size) {
+        this.size = size;
+    }
 
     public synchronized void offer(T value) throws InterruptedException {
         while (queue.size() >= size) {
