@@ -15,7 +15,12 @@ class SimpleBlockingQueueTest {
         SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<>();
         List<Integer> values = new ArrayList<>();
         Thread producer = new Thread(() -> {
-            queue.offer(123);
+            try {
+                queue.offer(123);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                Thread.currentThread().interrupt();
+            }
         });
         Thread consumer = new Thread(() -> {
             try {
