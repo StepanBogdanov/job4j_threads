@@ -50,7 +50,6 @@ class SimpleBlockingQueueTest {
                         try {
                             queue.offer(i);
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
                             Thread.currentThread().interrupt();
                         }
                     });
