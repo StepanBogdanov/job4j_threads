@@ -13,26 +13,37 @@ public class ThreadPool {
         int size = Runtime.getRuntime().availableProcessors();
         for (int i = 0; i < size; i++) {
             threads.add(new Thread(() -> {
-                try {
-                    tasks.poll();
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
+                while (!Thread.currentThread().isInterrupted()) {
+                    try {
+                        tasks.poll().run();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
                 }
             }));
         }
+        for (Thread thread : threads) {
+            thread.start();
+        }
     }
 
-    public void work(Runnable job) {
-        try {
-            tasks.offer(job);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+    public void work(Runnable job) throws InterruptedException {
+        tasks.offer(job);
     }
 
     public void shutdown() {
         for (Thread thread : threads) {
             thread.interrupt();
         }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        ThreadPool pool = new ThreadPool();
+        Thread task1 = new Thread(() -> System.out.println("Task1 is running"));
+        Thread task2 = new Thread(() -> System.out.println("Task2 is running"));
+        Thread task3 = new Thread(() -> System.out.println("Task3 is running"));
+        pool.work(task1);
+        pool.work(task2);
+        pool.work(task3);
     }
 }
